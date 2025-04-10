@@ -1,4 +1,3 @@
-import java.io.Console;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,7 +18,7 @@ public class Driver {
       menuOption = getValidMenuOption();
 
       performSelectedOption(menuOption);
-    } while (menuOption != 6);
+    } while (menuOption != 5);
 
     System.out.println("End of Program");
   }
@@ -75,102 +74,49 @@ public class Driver {
      * Perform the option selected by the user.
      */
     private static void performSelectedOption(int menuOption) {
-        Scanner scan = new Scanner(System.in);
-        double radius;
-        double height;
-        double length;
-        double width;
         switch (menuOption) {
             case 1:
-                // perform menu option operation
-                System.out.println("\nYou have selected to calculate the area of a Circle");
-                System.out.print("Please input the radius of the circle: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }                
-                radius = scan.nextDouble(); 
-                
-                // Circle circle = new Circle(radius);
-                // history.add(circle);
-                // System.out.println("The area of the circle is: " + circle.getArea());
+                retrieveFile();
                 break;
             case 2:
-                // perform menu option operation
-                System.out.println("You have selected to calculate the area of a Rectangle");
-                System.out.print("Please input the length of the rectangle: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                length = scan.nextDouble();
-                System.out.print("\nPlease input the width of the rectangle: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                width = scan.nextDouble();
-                
-                // Rectangle rectangle = new Rectangle(length, width);
-                // history.add(rectangle);
-                // System.out.println("The area of the rectangle is: " + rectangle.getArea());
+                quiz();
                 break;
             case 3:
-                // perform menu option operation
-                System.out.println("You have selected to calculate the volume of a Cylinder");
-                System.out.print("Please input the radius of the cylinder: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                radius = scan.nextDouble();
-                System.out.print("\nPlease input the height of the cylinder: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                height = scan.nextDouble();
-                
-                // Cylinder cylinder = new Cylinder(radius, height);
-                // history.add(cylinder);
-                // System.out.println("The volume of the cylinder is: " + cylinder.getVolume());
-
+                createNewFlashCardFile();
                 break;
             case 4:
-                // perform menu option operation
-                System.out.println("You have selected to calculate the volume of a Rectangular Prism");
-                System.out.print("Please input the height of the rectangular prism: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                height = scan.nextDouble();
-                System.out.print("\nPlease input the length of the rectangular prism: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                length = scan.nextDouble();
-                System.out.print("\nPlease input the width of the rectangular prism: ");
-                while (!scan.hasNextDouble()) { 
-                    System.out.println("Invalid input. Please enter a valid double.");
-                    scan.nextLine();
-                }
-                width = scan.nextDouble();
-                
-                // RectangularPrism rectangular_Prism = new RectangularPrism(height, width, length);
-                // history.add(rectangular_Prism);
-                // System.out.println("The volume of the rectangular prism is: " + rectangular_Prism.getVolume());
+                addNewFlashCard();
                 break;
             case 5:
-                // // print out history
-                // for (MyMath item : history) {
-                //     System.out.println(item.getHistory());
-                //     System.out.println("\n");
-                // }
+                quit();
                 break;
             case 6:
-                System.out.println("Saving...\n");
+                
+            default:
+                break;
+        }
+    }
+
+    private static void retrieveFile()
+    {
+
+    }
+
+    private static void quiz()
+    {
+
+    }
+
+    private static void createNewFlashCardFile(){
+
+    }
+
+    private static void addNewFlashCard(){
+
+    }
+
+    private static void quit(){
+        System.out.println("Saving...\n");
                 // save history to file and then exit
                 // serialize obj and write to file
                 FileOutputStream outStream = null;
@@ -195,9 +141,8 @@ public class Driver {
                     }
                 }
                 System.out.println("Finished");
-            default:
-                break;
-        }
     }
+
+    
 
 }
