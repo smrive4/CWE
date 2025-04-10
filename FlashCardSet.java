@@ -16,7 +16,8 @@ public class FlashCardSet implements Serializable{
      */
     public FlashCardSet(String topic, ArrayList<FlashCard> cards){
         this.topic = topic;
-
+        cards = new ArrayList<>();
+        
         // Create a deep copy
         for(int i = 0; i < cards.size(); i++)
         {
