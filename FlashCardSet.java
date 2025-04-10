@@ -1,10 +1,13 @@
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * FlashCard Set Class
  */
-public class FlashCardSet{
+public class FlashCardSet implements Serializable{
     private String topic; /** Topic of the FlashCards */
     private ArrayList<FlashCard> cards; /** List of Flashcards */
 
@@ -57,6 +60,17 @@ public class FlashCardSet{
     public void addCard(FlashCard card)
     {
         cards.add(new FlashCard(card.getTerm(), card.getDef()));
+    }
+
+    /**
+     * Reads the state of the object from an input stream. Uses Java's built in serialization
+     * 
+     * @param stream the stream the object will be read from
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
     }
 
 }
