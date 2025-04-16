@@ -111,7 +111,6 @@ public class Driver {
 
     private static void quiz()
     {
-        System.out.println("quizzing you");
         FlashCardSet set;
         String userInput;
 
@@ -162,7 +161,54 @@ public class Driver {
     }
 
     private static void createNewFlashCardFile(){
-        System.out.println("creating a new deck");
+
+        // get and validate topic name
+        System.out.println("Enter new topic name:");
+        String topicName = "";
+
+        while (true) {
+            topicName = scan.nextLine().trim();
+    
+            // Check if input is valid
+            // The Topic must be an alphanumeric between one and twenty characters
+            if (topicName.matches("^[a-zA-Z0-9]{1,20}$")) {
+                break; // valid input
+            } else {
+                System.out.println("Invalid topic name. Please use only letters and numbers, max 20 characters.");
+            }
+        }
+
+        //create new flashcard and add to set
+        FlashCardSet newSet = new FlashCardSet(topicName, null);
+        sets.add(newSet);
+
+        // get valid user input
+        String term = getValidFlashcardTextFromUser("Enter term side:");
+        String definition = getValidFlashcardTextFromUser("Enter definition side");
+        
+        // FlashCard
+    
+
+    }
+
+    // gets and validates user input for one side of a flashcard
+    private static String getValidFlashcardTextFromUser(String prompt) {
+        System.out.println(prompt);
+        String userInput = "";
+        while (true) {
+            userInput = scan.nextLine().trim();
+    
+            // Check if input is valid
+            // The Topic must be an alphanumeric between one and twenty characters
+            if (userInput.matches("^.{1,200}$")) {
+                break; // valid input
+            } else {
+                System.out.println("Invalid input. Card side must be between 1 and 200 characters and cannot contain any newlines");
+            }
+        }
+
+        return userInput;
+
     }
 
     private static void addNewFlashCard(){
