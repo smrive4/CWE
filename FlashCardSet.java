@@ -10,20 +10,22 @@ import java.util.ArrayList;
 public class FlashCardSet implements Serializable{
     private String topic; /** Topic of the FlashCards */
     private ArrayList<FlashCard> cards; /** List of Flashcards */
+    private int numOfCards;
 
     /**
      * Constructor
      */
     public FlashCardSet(String topic, ArrayList<FlashCard> cards){
         this.topic = topic;
-        cards = new ArrayList<>();
-        
+        this.cards = new ArrayList<>();
+
+        this.numOfCards = cards.size();
         // Create a deep copy
         for(int i = 0; i < cards.size(); i++)
         {
             this.cards.add(new FlashCard(cards.get(i).getTerm(), cards.get(i).getDef()));
+            
         }
-
     }
 
     /**
@@ -61,6 +63,7 @@ public class FlashCardSet implements Serializable{
     public void addCard(FlashCard card)
     {
         cards.add(new FlashCard(card.getTerm(), card.getDef()));
+        numOfCards++;
     }
 
     /**
@@ -72,6 +75,10 @@ public class FlashCardSet implements Serializable{
      */
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
+    }
+
+    public int getNumOfCards() {
+        return numOfCards;
     }
 
 }

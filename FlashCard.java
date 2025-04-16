@@ -21,14 +21,14 @@ public class FlashCard{
      * Getter to get the term
      */
     public String getTerm(){
-        return definition;
+        return this.term;
     }
     
     /**
      * Getter to get the definition
      */
     public String getDef(){
-        return this.term;
+        return this.definition;
     }
 
     /**
