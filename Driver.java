@@ -4,9 +4,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.HashMap;
 
 public class Driver {
   
+    // A list of topics the user can choose from
+    static HashMap<String, Integer> topics = new HashMap<>(); 
+    // An ArrayList of all flashcard sets 
+    static ArrayList<FlashCardSet> sets = new ArrayList<>();
     // a list of allowed inputs
     private static ArrayList<String> allowedInputs = new ArrayList<String>(Arrays.asList("1", "2", "3", "4", "5"));
     private static Scanner scan = new Scanner(System.in);
@@ -107,6 +112,53 @@ public class Driver {
     private static void quiz()
     {
         System.out.println("quizzing you");
+        FlashCardSet set;
+        String userInput;
+
+        // Prompt User to Select Topic
+        if(sets == null || sets.isEmpty())
+        {
+            // No Topics to choose from
+            System.out.println("No Flash Card Topics to Choose From");
+            return;
+        }
+        
+        System.out.println("Select from the following topics: ");
+        // Print out topics the user can choose from
+        for(int i = 0; i < sets.size(); i++)
+        {
+            System.out.println(sets.get(i).getTopic());
+        }
+        System.out.print("Enter desired topic: ");
+        userInput = scan.nextLine();
+
+        // Check if topic is a valid option
+        if(topics.containsKey(userInput))
+            set = sets.get(topics.get(userInput));
+        else{
+            System.out.println("Invalid Topic");
+            return;
+        }
+
+        // Quiz user on all the flashcards in the set
+        for(int i = 0; i < set.getNumOfCards(); i++)
+        {
+            // Display Term
+            System.out.println("Term: " + set.getCard(i).getTerm());
+
+            // Get user's anwser
+            System.out.print("Enter the definition: ");
+            userInput = scan.nextLine();
+
+            // Check user's anwser
+            if(userInput.equalsIgnoreCase(set.getCard(i).getDef()))
+                System.out.println("Correct!");
+            else
+            {
+                System.out.println("Incorrect");
+                System.out.println("Correct Defintion is : " + set.getCard(i).getDef());
+            }
+        }
     }
 
     private static void createNewFlashCardFile(){
