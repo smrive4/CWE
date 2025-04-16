@@ -42,7 +42,7 @@ public class Driver {
         System.out.println("Enter option (#-#): ");
     }
 
-    
+    /*
      * Get a Valid Menu Option
      * 
      * @return an integer representing a valid menu option
@@ -66,32 +66,9 @@ public class Driver {
         } catch (NumberFormatException e) {
 
             // allowedInputs list has given a faulty number - redisplay the display menu
-            System.out.println("Option must be an number");
-            displayMenu();
+            System.out.println("Error has occurred. Closing flashcard app");
+            return 5;
         }
-        String trash;
-
-        // Ensure menuOption is a integer
-        while (!scan.hasNextInt()) {
-            System.out.println("Option must be an number");
-            trash = scan.nextLine();
-            displayMenu();
-        }
-        menuOption = scan.nextInt();
-        // Ensure menuOption falls within the valid range of options
-        while (menuOption > 5 || menuOption < 1) {
-            System.out.println("Option must be one of the listed options");
-            displayMenu();
-            // Ensure menuOption is a integer
-            while (!scan.hasNextInt()) {
-                System.out.println("Option must be an number");
-                trash = scan.nextLine();
-                displayMenu();
-            }
-            menuOption = scan.nextInt();
-        }
-        trash = scan.nextLine();
-
         return menuOption;
     }
 
@@ -124,20 +101,20 @@ public class Driver {
 
     private static void retrieveFile()
     {
-
+        System.out.println("retrieving file...");
     }
 
     private static void quiz()
     {
-
+        System.out.println("quizzing you");
     }
 
     private static void createNewFlashCardFile(){
-
+        System.out.println("creating a new deck");
     }
 
     private static void addNewFlashCard(){
-
+        System.out.println("Adding new flashcards");
     }
 
     private static void quit(){
