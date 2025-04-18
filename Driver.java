@@ -142,20 +142,26 @@ public class Driver {
         // Quiz user on all the flashcards in the set
         for(int i = 0; i < set.getNumOfCards(); i++)
         {
+            FlashCard currCard = set.getCard(i);
+
+            // Compliant with CWE-252, check return value for null
+            if(currCard == null)
+                return;
+
             // Display Term
-            System.out.println("Term: " + set.getCard(i).getTerm());
+            System.out.println("Term: " + currCard.getTerm());
 
             // Get user's anwser
             System.out.print("Enter the definition: ");
             userInput = scan.nextLine();
 
             // Check user's anwser
-            if(userInput.equalsIgnoreCase(set.getCard(i).getDef()))
+            if(userInput.equalsIgnoreCase(currCard.getDef()))
                 System.out.println("Correct!");
             else
             {
                 System.out.println("Incorrect");
-                System.out.println("Correct Defintion is : " + set.getCard(i).getDef());
+                System.out.println("Correct Defintion is : " + currCard.getDef());
             }
         }
     }
@@ -212,7 +218,47 @@ public class Driver {
     }
 
     private static void addNewFlashCard(){
-        System.out.println("Adding new flashcards");
+        FlashCardSet set = null;
+        String userInput;
+        String term;
+        String defintion;
+        String topic = "";
+        ArrayList<FlashCard> cards = new ArrayList<>();
+
+        System.out.println("Select which topic to add to from the following topics or create a new topic: ");
+        // Print out topics the user can choose from
+        for(int i = 0; i < sets.size(); i++)
+        {
+            System.out.println(sets.get(i).getTopic());
+        }
+        System.out.print("Enter desired topic or a new topic: ");
+        userInput = scan.nextLine();
+
+        // Check if topic is a valid option
+        if(topics.containsKey(userInput))
+            set = sets.get(topics.get(userInput));
+        else{
+            // Else, create a new topic
+            topic = userInput;
+        }
+
+        // Get FlashCard Term from User
+        term = getValidFlashcardTextFromUser("Enter Term");
+
+        // Get FlashCard Definition from User
+        defintion = getValidFlashcardTextFromUser("Enter Definition");
+
+        // Add FlashCard to either Existing Set or a new Set
+        if(set != null)
+        {
+            set.addCard(new FlashCard(term, defintion));
+        }
+        else
+        {
+            cards.add(new FlashCard(term, defintion));
+            sets.add(new FlashCardSet(topic, cards));
+            topics.put(topic, sets.size() - 1);
+        }
     }
 
     private static void quit(){
@@ -226,14 +272,10 @@ public class Driver {
                     objStream = new ObjectOutputStream(outStream);
                     // objStream.writeObject(history);
 
-                } catch (IOException e) {
+                } catch (IOException e) { 
                     System.err.println("Error: " + e.getMessage());
-
-                    // FIO14-J: Perform proper cleanup at program termination
-                    // Err04-J: Do not complete abruptly from a finally block
                 } finally {
                     try {
-                        // EXP01-J: Do not use null in a case where an object is required
                         if (objStream != null)
                             objStream.close();
                     } catch (IOException e) {

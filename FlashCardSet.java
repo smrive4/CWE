@@ -30,6 +30,8 @@ public class FlashCardSet implements Serializable{
 
     /**
      * Getter to get the topic
+     * 
+     * @return the topic of the set
      */
     public String getTopic(){
         return this.topic;
@@ -49,10 +51,14 @@ public class FlashCardSet implements Serializable{
      * Getter to get a card from the set
      * 
      * @param index index of the card that will be returned
+     * @return a FlashCard Object at that given index
      */
     public FlashCard getCard(int index)
     {
-        return new FlashCard(cards.get(index).getTerm(), cards.get(index).getDef());
+        if(index >= numOfCards) // Compliant with CWE-1284, ensuring input is validate to ensure it's a valid index
+            return null; 
+
+        return new FlashCard(cards.get(index).getTerm(), cards.get(index).getDef()); // Compliant with CWE-375, returning a copy of the object to a untrusted caller
     }
 
     /**
@@ -73,10 +79,15 @@ public class FlashCardSet implements Serializable{
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException { // Compliant with CWE-397, Not throwing a Generic Expression
         stream.defaultReadObject();
     }
 
+    /**
+     * Method to return the number of cards
+     * 
+     * @return the number of cards in the set
+     */
     public int getNumOfCards() {
         return numOfCards;
     }
