@@ -1,8 +1,13 @@
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+
 /**
  * FlashCard Class
  */
-public class FlashCard{
+public class FlashCard implements Serializable{
     private String term; /** Term*/
     private String definition; /** Definition*/
 
@@ -47,5 +52,16 @@ public class FlashCard{
      */
     public void updateDef(String definition){
         this.definition = definition;
+    }
+
+    /**
+     * Reads the state of the object from an input stream. Uses Java's built in serialization
+     * 
+     * @param stream the stream the object will be read from
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException { // Compliant with CWE-397, Not throwing a Generic Expression
+        stream.defaultReadObject();
     }
 }

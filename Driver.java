@@ -1,5 +1,7 @@
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +9,8 @@ import java.util.Scanner;
 import java.util.HashMap;
 
 public class Driver {
-  
+    // File path to get history
+    private static final String flashCardSetsFileName = "flashcardsets.ser";
     // A list of topics the user can choose from
     static HashMap<String, Integer> topics = new HashMap<>(); 
     // An ArrayList of all flashcard sets 
@@ -17,6 +20,9 @@ public class Driver {
     private static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
+        // Get any previous FlashCard Sets first
+        sets = retrieveFlashCards();
+        retrieveTopics();
 
         System.out.println("Welcome to the flashcard app");
 
@@ -263,28 +269,55 @@ public class Driver {
 
     private static void quit(){
         System.out.println("Saving...\n");
-                // save history to file and then exit
-                // serialize obj and write to file
-                FileOutputStream outStream = null;
-                ObjectOutputStream objStream = null;
-                try {
-                    // outStream = new FileOutputStream(historyFileName);
-                    objStream = new ObjectOutputStream(outStream);
-                    // objStream.writeObject(history);
-
-                } catch (IOException e) { 
-                    System.err.println("Error: " + e.getMessage());
-                } finally {
-                    try {
-                        if (objStream != null)
-                            objStream.close();
-                    } catch (IOException e) {
-                        System.err.println("Error saving to file: " + e);
-                    }
-                }
-                System.out.println("Finished");
+        // save history to file and then exit
+        // serialize obj and write to file
+        FileOutputStream outStream = null;
+        ObjectOutputStream objStream = null;
+        try {
+            outStream = new FileOutputStream(flashCardSetsFileName);
+            objStream = new ObjectOutputStream(outStream);
+            objStream.writeObject(sets);
+        } catch (IOException e) { 
+            System.err.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (objStream != null)
+                    objStream.close();
+            } catch (IOException e) {
+                System.err.println("Error saving to file: " + e);
+            }
+        }
+        System.out.println("Finished");
     }
 
-    
+    /**
+     * Gets the history from the history.ser file
+     * 
+     * @return an array list of the user's history
+     */
+    @SuppressWarnings("unchecked")
+    private static ArrayList<FlashCardSet> retrieveFlashCards() {
+        ArrayList<FlashCardSet> deserializedObj = new ArrayList<>();
 
+        // open history.ser and get the file
+        try (FileInputStream inStream = new FileInputStream(flashCardSetsFileName);
+                ObjectInputStream objStream = new ObjectInputStream(inStream)) {
+            // get the object and cast it
+            deserializedObj = (ArrayList<FlashCardSet>) objStream.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error: retrieving history: " + e.getMessage());
+        }
+
+        return deserializedObj;
+    }
+
+    private static void retrieveTopics()
+    {
+        for(int i = 0; i < sets.size(); i++)
+        {
+            String topic = sets.get(i).getTopic();
+            topics.put(topic, i);
+        }
+    }
 }
