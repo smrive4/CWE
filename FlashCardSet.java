@@ -55,7 +55,7 @@ public class FlashCardSet implements Serializable{
      */
     public FlashCard getCard(int index)
     {
-        if(index >= numOfCards) // Compliant with CWE-1284, ensuring input is validate to ensure it's a valid index
+        if(index >= numOfCards || index < 0) // Compliant with CWE-1284, ensuring input is validate to ensure it's a valid index
             return null; 
 
         return new FlashCard(cards.get(index).getTerm(), cards.get(index).getDef()); // Compliant with CWE-375, returning a copy of the object to a untrusted caller
