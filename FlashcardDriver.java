@@ -49,9 +49,8 @@ public class FlashcardDriver {
             menuOption = getValidMenuOption();
 
             performSelectedOption(menuOption);
-        } while (menuOption != 5);
+        } while (true); //run until user exits
 
-        System.out.println("End of Program");
     }
     //uses proper input validation here - CWE20
     private static void selectUserRole() {
@@ -396,20 +395,24 @@ public class FlashcardDriver {
             isAddingCard = false; // always reset to false
         }
     }
-
-    private static void quit() {
+    private static boolean quit() {
+        System.out.print("Are you sure you want to quit and save your flashcards? (\nThe file will be locally stored and this could be dangerous if you don't trust this device.\n(yes/no): ");
+        String confirmQuit = scan.nextLine();
+    
+        if (!confirmQuit.equalsIgnoreCase("yes")) {
+            System.out.println("Quit cancelled. Returning to menu...");
+            return false;
+        }
+    
         System.out.println("Saving...\n");
-        // Save history to file and then exit
         FileOutputStream outStream = null;
         ObjectOutputStream objStream = null;
         try {
             outStream = new FileOutputStream(flashCardSetsFileName);
             objStream = new ObjectOutputStream(outStream);
             objStream.writeObject(sets);
-            //complies with CWE-778
             logger.info("saving data to file");
         } catch (IOException e) {
-            //System.err.println("Error: " + e.getMessage());
             logger.info("Error: " + e.getMessage());
         } finally {
             try {
@@ -417,7 +420,6 @@ public class FlashcardDriver {
                     objStream.close();
                 }
             } catch (IOException e) {
-                //System.err.println("Error saving to file: " + e);
                 logger.info("Error saving to file: " + e);
             }
             try {
@@ -425,12 +427,13 @@ public class FlashcardDriver {
                     scan.close();
                 }
             } catch (Exception e) {
-                //System.err.println("Error closing scanner: " + e);
                 logger.info("Error closing scanner: " + e);
             }
         }
-        System.out.println("Finished");
+        System.out.println("Finished. End of program.");
+        return true;
     }
+    
 
     /**
      * Gets the history from the flashcardsets.ser file
