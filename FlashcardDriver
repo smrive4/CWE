@@ -1,3 +1,6 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -260,37 +263,43 @@ public class FlashcardDriver {
     }
 
     private static void createNewFlashCardFile() {
-        // Get and validate topic name
-        System.out.println("Enter new topic name:");
-        String topicName = "";
+        //Complies with CWE-279
+        if(userRole.equals("editor")) {
+            // Get and validate topic name
+            System.out.println("Enter new topic name:");
+            String topicName = "";
 
-        while (true) {
-            topicName = scan.nextLine().trim();
+            while (true) {
+                topicName = scan.nextLine().trim();
 
-            // Check if input is valid
-            // The Topic must be alphanumeric between one and twenty characters
-            //complies with CWE-625
-            if (topicName.matches("^[a-zA-Z0-9]{1,20}$")) {
-                break; // valid input
-            } else {
-                System.out.println("Invalid topic name. Please use only letters and numbers, max 20 characters.");
+                // Check if input is valid
+                // The Topic must be alphanumeric between one and twenty characters
+                //complies with CWE-625
+                if (topicName.matches("^[a-zA-Z0-9]{1,20}$")) {
+                    break; // valid input
+                } else {
+                    System.out.println("Invalid topic name. Please use only letters and numbers, max 20 characters.");
+                }
             }
+
+            // Create new flashcard set and add to sets
+            FlashCardSet newSet = new FlashCardSet(topicName, new ArrayList<FlashCard>());
+            sets.add(newSet);
+            topics.put(topicName, sets.size() - 1);
+
+            // Get valid user input for the first flashcard
+            String term = getValidFlashcardTextFromUser("Enter term side:");
+            String definition = getValidFlashcardTextFromUser("Enter definition side");
+
+            // Create and add the flashcard
+            FlashCard newCard = new FlashCard(term, definition);
+            newSet.addCard(newCard);
+            System.out.println("Flashcard added successfully.");
+            logger.info("new card file added");
         }
-
-        // Create new flashcard set and add to sets
-        FlashCardSet newSet = new FlashCardSet(topicName, new ArrayList<FlashCard>());
-        sets.add(newSet);
-        topics.put(topicName, sets.size() - 1);
-
-        // Get valid user input for the first flashcard
-        String term = getValidFlashcardTextFromUser("Enter term side:");
-        String definition = getValidFlashcardTextFromUser("Enter definition side");
-
-        // Create and add the flashcard
-        FlashCard newCard = new FlashCard(term, definition);
-        newSet.addCard(newCard);
-        System.out.println("Flashcard added successfully.");
-        logger.info("new card file added");
+        else{
+            logger.info("user does not have access to this");
+        }
     }
 
     // Gets and validates user input for one side of a flashcard
@@ -313,52 +322,57 @@ public class FlashcardDriver {
     }
 
     private static void addNewFlashCard() {
-        FlashCardSet set = null;
-        String userInput;
-        String term;
-        String definition;
-        String topic = "";
-        ArrayList<FlashCard> cards = new ArrayList<>();
+        if(userRole.equals("editor")) {
+            FlashCardSet set = null;
+            String userInput;
+            String term;
+            String definition;
+            String topic = "";
+            ArrayList<FlashCard> cards = new ArrayList<>();
 
-        System.out.println("Select which topic to add to from the following topics or create a new topic: ");
-        // Print out topics the user can choose from
-        for (int i = 0; i < sets.size(); i++) {
-            System.out.println(sets.get(i).getTopic());
-        }
-        System.out.print("Enter desired topic or a new topic: ");
-        userInput = scan.nextLine();
-
-        // Validate new topic name if it doesn't exist
-        if (!topics.containsKey(userInput)) {
-            topic = userInput;
-            while (!topic.matches("^[a-zA-Z0-9]{1,20}$")) {
-                System.out.println("Invalid topic name. Please use only letters and numbers, max 20 characters.");
-                System.out.print("Enter desired topic or a new topic: ");
-                topic = scan.nextLine();
+            System.out.println("Select which topic to add to from the following topics or create a new topic: ");
+            // Print out topics the user can choose from
+            for (int i = 0; i < sets.size(); i++) {
+                System.out.println(sets.get(i).getTopic());
             }
+            System.out.print("Enter desired topic or a new topic: ");
+            userInput = scan.nextLine();
+
+            // Validate new topic name if it doesn't exist
+            if (!topics.containsKey(userInput)) {
+                topic = userInput;
+                while (!topic.matches("^[a-zA-Z0-9]{1,20}$")) {
+                    System.out.println("Invalid topic name. Please use only letters and numbers, max 20 characters.");
+                    System.out.print("Enter desired topic or a new topic: ");
+                    topic = scan.nextLine();
+                }
+            }
+
+            // Check if topic is a valid option
+            if (topics.containsKey(userInput)) {
+                set = sets.get(topics.get(userInput));
+            }
+
+            // Get FlashCard Term from User
+            term = getValidFlashcardTextFromUser("Enter Term");
+
+            // Get FlashCard Definition from User
+            definition = getValidFlashcardTextFromUser("Enter Definition");
+
+            // Add FlashCard to either Existing Set or a new Set
+            if (set != null) {
+                set.addCard(new FlashCard(term, definition));
+            } else {
+                cards.add(new FlashCard(term, definition));
+                sets.add(new FlashCardSet(topic, cards));
+                topics.put(topic, sets.size() - 1);
+            }
+            System.out.println("Flashcard added successfully.");
+            logger.info("New flashcard has been added");
         }
-
-        // Check if topic is a valid option
-        if (topics.containsKey(userInput)) {
-            set = sets.get(topics.get(userInput));
+        else{
+            logger.info("user does not have access to this");
         }
-
-        // Get FlashCard Term from User
-        term = getValidFlashcardTextFromUser("Enter Term");
-
-        // Get FlashCard Definition from User
-        definition = getValidFlashcardTextFromUser("Enter Definition");
-
-        // Add FlashCard to either Existing Set or a new Set
-        if (set != null) {
-            set.addCard(new FlashCard(term, definition));
-        } else {
-            cards.add(new FlashCard(term, definition));
-            sets.add(new FlashCardSet(topic, cards));
-            topics.put(topic, sets.size() - 1);
-        }
-        System.out.println("Flashcard added successfully.");
-        logger.info("New flashcard has been added");
     }
 
     private static void quit() {
