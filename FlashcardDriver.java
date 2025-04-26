@@ -49,7 +49,8 @@ public class FlashcardDriver {
             menuOption = getValidMenuOption();
 
             performSelectedOption(menuOption);
-        } while (true); // Stay in loop unless user 
+        } while (true); //run until user exits
+
     }
     //uses proper input validation here - CWE20
     private static void selectUserRole() {
@@ -394,7 +395,6 @@ public class FlashcardDriver {
             isAddingCard = false; // always reset to false
         }
     }
-
     private static boolean quit() {
         System.out.print("Are you sure you want to quit and save your flashcards? (\nThe file will be locally stored and this could be dangerous if you don't trust this device.\n(yes/no): ");
         String confirmQuit = scan.nextLine();
@@ -434,6 +434,33 @@ public class FlashcardDriver {
         return true;
     }
     
+
+    /**
+     * Gets the history from the flashcardsets.ser file
+     *
+     * @return an array list of the user's history
+     */
+    @SuppressWarnings("unchecked")
+    private static ArrayList<FlashCardSet> retrieveFlashCards() {
+        ArrayList<FlashCardSet> deserializedObj = new ArrayList<>();
+
+        // Open flashcardsets.ser and get the file
+        try (FileInputStream inStream = new FileInputStream(flashCardSetsFileName);
+             ObjectInputStream objStream = new ObjectInputStream(inStream)) {
+            // Get the object and cast it
+            deserializedObj = (ArrayList<FlashCardSet>) objStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            //System.err.println("Error retrieving history: " + e.getMessage());
+            logger.info("Error retrieving history: " + e.getMessage());
+            System.out.println("The program was terminated because no serialization file was found");
+            //Complies with CWE-390
+            System.out.println("A new serialization file will be created, and the program will be able to be used");
+            quit();
+            System.exit(1);
+        }
+
+        return deserializedObj;
+    }
 
     private static void retrieveTopics() {
         for (int i = 0; i < sets.size(); i++) {
