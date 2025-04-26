@@ -24,6 +24,8 @@ public class FlashcardDriver {
     private static String userRole;
     // create the logging class
     static Logger logger = Logger.getLogger(FlashcardDriver.class.getName());
+    // shows if system is currently in the process of adding a flashcard
+    private static boolean isAddingCard = false;
 
     public static void main(String[] args) {
         // Get any previous FlashCard Sets first
@@ -51,7 +53,7 @@ public class FlashcardDriver {
 
         System.out.println("End of Program");
     }
-
+    //uses proper input validation here - CWE20
     private static void selectUserRole() {
         System.out.println("Select your role:");
         System.out.println("1. Simple User (Quiz and Retrieve only)");
@@ -261,7 +263,7 @@ public class FlashcardDriver {
             }
         }
     }
-
+    //proper input validaiton - CWE-20
     private static void createNewFlashCardFile() {
         //Complies with CWE-279
         if(userRole.equals("editor")) {
@@ -290,7 +292,11 @@ public class FlashcardDriver {
             // Get valid user input for the first flashcard
             String term = getValidFlashcardTextFromUser("Enter term side:");
             String definition = getValidFlashcardTextFromUser("Enter definition side");
-
+            // Validate parameters before creating flashcard - CWE233
+            if (term == null || term.trim().isEmpty() || definition == null || definition.trim().isEmpty()) {
+                System.out.println("Error: Term and Definition cannot be empty.");
+                return; 
+            }
             // Create and add the flashcard
             FlashCard newCard = new FlashCard(term, definition);
             newSet.addCard(newCard);
@@ -303,6 +309,7 @@ public class FlashcardDriver {
     }
 
     // Gets and validates user input for one side of a flashcard
+    //Ensures proper inputs - using input validation - CWE20
     private static String getValidFlashcardTextFromUser(String prompt) {
         System.out.println(prompt);
         String userInput = "";
@@ -322,6 +329,12 @@ public class FlashcardDriver {
     }
 
     private static void addNewFlashCard() {
+        if (isAddingCard) {
+            System.out.println("Flashcard creation already in progress. Please wait...");
+            return;
+        }
+        isAddingCard = true;
+        try{
         if(userRole.equals("editor")) {
             FlashCardSet set = null;
             String userInput;
@@ -359,6 +372,11 @@ public class FlashcardDriver {
             // Get FlashCard Definition from User
             definition = getValidFlashcardTextFromUser("Enter Definition");
 
+            // Validate parameters before adding flashcard - CWE-233
+            if (term == null || term.trim().isEmpty() || definition == null || definition.trim().isEmpty()) {
+                System.out.println("Error: Term and Definition cannot be empty.");
+                return; // abort flashcard creation if invalid
+            }
             // Add FlashCard to either Existing Set or a new Set
             if (set != null) {
                 set.addCard(new FlashCard(term, definition));
@@ -372,6 +390,10 @@ public class FlashcardDriver {
         }
         else{
             logger.info("user does not have access to this");
+        }
+        isAddingCard=false;}
+        finally {
+            isAddingCard = false; // always reset to false
         }
     }
 

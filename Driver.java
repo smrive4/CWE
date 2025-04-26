@@ -35,9 +35,7 @@ public class Driver {
             menuOption = getValidMenuOption();
 
             performSelectedOption(menuOption);
-        } while (menuOption != 5);
-
-        System.out.println("End of Program");
+        } while (true); // Stay in loop unless user exits
     }
 
     private static void displayMenu() {
@@ -191,7 +189,8 @@ public class Driver {
         }
 
         //create new flashcard and add to set
-        FlashCardSet newSet = new FlashCardSet(topicName, null);
+        //Creat empty array list to ensure non null values in cloning
+        FlashCardSet newSet = new FlashCardSet(topicName, new ArrayList<>());
         sets.add(newSet);
 
         // get valid user input
@@ -267,7 +266,16 @@ public class Driver {
         }
     }
 
-    private static void quit(){
+    private static boolean quit(){
+            // CWE-356
+            System.out.print("Are you sure you want to quit and save your flashcards? (\nThe file will be locally stored and this could be dangerous if you don't trust this device.\n(yes/no): ");
+            String confirmQuit = scan.nextLine();
+            
+            if (!confirmQuit.equalsIgnoreCase("yes")) {
+                System.out.println("Quit cancelled. Returning to menu...");
+                return false; 
+            }
+
         System.out.println("Saving...\n");
         // save history to file and then exit
         // serialize obj and write to file
@@ -287,7 +295,8 @@ public class Driver {
                 System.err.println("Error saving to file: " + e);
             }
         }
-        System.out.println("Finished");
+        System.out.println("Finished.  End of program.");
+        return true;
     }
 
     /**
