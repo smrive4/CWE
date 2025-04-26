@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * FlashCard Class
  */
-public class FlashCard implements Serializable{
+public class FlashCard implements Serializable, Cloneable{
     private String term; /** Term*/
     private String definition; /** Definition*/
 
@@ -63,5 +63,14 @@ public class FlashCard implements Serializable{
      */
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException { // Compliant with CWE-397, Not throwing a Generic Expression
         stream.defaultReadObject();
+    }
+    //CWE-491
+    @Override
+    public final FlashCard clone() {
+        try {
+            return (FlashCard) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should never happen
+        }
     }
 }

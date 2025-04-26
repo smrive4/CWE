@@ -21,11 +21,15 @@ public class FlashCardSet implements Serializable{
 
         this.numOfCards = cards.size();
         // Create a deep copy
-        for(int i = 0; i < cards.size(); i++)
-        {
-            this.cards.add(new FlashCard(cards.get(i).getTerm(), cards.get(i).getDef()));
-            
+        // Using clone - CWE-491 implementation
+        for (int i = 0; i < cards.size(); i++) {
+            try {
+                this.cards.add(cards.get(i).clone()); // Use safe clone
+            } catch (Exception e) {
+                System.err.println("Failed to clone flashcard: " + e.getMessage());
+            }
         }
+        
     }
 
     /**
@@ -91,5 +95,6 @@ public class FlashCardSet implements Serializable{
     public int getNumOfCards() {
         return numOfCards;
     }
+    
 
 }
