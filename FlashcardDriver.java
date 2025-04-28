@@ -159,6 +159,7 @@ public class FlashcardDriver {
                 }
                 else{
                     System.out.println("Finished");
+                    System.exit(0);
                 }
                 break;
             default:
@@ -422,15 +423,16 @@ public class FlashcardDriver {
             } catch (IOException e) {
                 logger.info("Error saving to file: " + e);
             }
-            try {
-                if (scan != null) {
-                    scan.close();
-                }
-            } catch (Exception e) {
-                logger.info("Error closing scanner: " + e);
-            }
+            // try {
+            //     if (scan != null) {
+            //         // scan.close();
+            //     }
+            // } catch (Exception e) {
+            //     logger.info("Error closing scanner: " + e);
+            // }
         }
         System.out.println("Finished. End of program.");
+        System.exit(1);
         return true;
     }
     
@@ -456,7 +458,6 @@ public class FlashcardDriver {
             //Complies with CWE-390
             System.out.println("A new serialization file will be created, and the program will be able to be used");
             quit();
-            System.exit(1);
         }
 
         return deserializedObj;
